@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="353.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.pllWindowController">
+   <children>
+      <TextField fx:id="order" layoutX="109.0" layoutY="39.0" />
+      <TextField fx:id="div_val" layoutX="109.0" layoutY="98.0" />
+      <TextField fx:id="fc" layoutX="109.0" layoutY="162.0" />
+      <TextField fx:id="kv" layoutX="109.0" layoutY="231.0" />
+      <TextField fx:id="fp" layoutX="109.0" layoutY="298.0" />
+      <TextField fx:id="fz" layoutX="109.0" layoutY="368.0" />
+      <TextField fx:id="gain" layoutX="109.0" layoutY="430.0" />
+      <Label layoutX="67.0" layoutY="43.0" text="order">
+         <tooltip>
+            <Tooltip text="该模块在仿真文件中的连接次序" />
+         </tooltip>
+      </Label>
+      <Label layoutX="63.0" layoutY="102.0" text="div_val">
+         <tooltip>
+            <Tooltip text="锁相环的分频比" />
+         </tooltip>
+      </Label>
+      <Label layoutX="77.0" layoutY="166.0" text="fc">
+         <tooltip>
+            <Tooltip text="压控振荡器的控制电压为0时的输出频率" />
+         </tooltip></Label>
+      <Label layoutX="76.0" layoutY="235.0" text="Kv">
+         <tooltip>
+            <Tooltip text="压控振荡器的压控振荡系数" />
+         </tooltip></Label>
+      <Label layoutX="77.0" layoutY="302.0" text="fp">
+         <tooltip>
+            <Tooltip text="锁相环环路滤波器参数，需要使用PllDesign软件计算" />
+         </tooltip></Label>
+      <Label layoutX="78.0" layoutY="372.0" text="fz">
+         <tooltip>
+            <Tooltip text="锁相环环路滤波器参数，需要使用PllDesign软件计算" />
+         </tooltip>
+      </Label>
+      <Label layoutX="71.0" layoutY="434.0" text="gain">
+         <tooltip>
+            <Tooltip text="环路滤波器的增益，需要使用PllDesign去计算" />
+         </tooltip></Label>
+      <Button fx:id="save" layoutX="237.0" layoutY="504.0" mnemonicParsing="false" onAction="#save" text="保存" />
+      <Button fx:id="cancel" layoutX="290.0" layoutY="504.0" mnemonicParsing="false" onAction="#cancel" text="取消" />
+   </children>
+</Pane>
