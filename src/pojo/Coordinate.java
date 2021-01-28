@@ -10,8 +10,8 @@ import java.io.Serializable;
  **/
 
 public class Coordinate implements Serializable {
-    public int x;
-    public int y;
+    private int x;
+    private int y;
 
     public int getX() {
         return x;

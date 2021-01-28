@@ -41,9 +41,6 @@ public class mainWindowController {
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
 
-    @FXML // fx:id="pllTable"
-    private TableView<Pll> pllTable; // Value injected by FXMLLoader
-
     @FXML // fx:id="selectDirectory"
     private Button selectDirectory; // Value injected by FXMLLoader
 
@@ -56,29 +53,32 @@ public class mainWindowController {
     @FXML // fx:id="createDDS"
     private Button createDDS; // Value injected by FXMLLoader
 
-    @FXML // fx:id="deleteModule"
-    private Button deleteModule; // Value injected by FXMLLoader
+    @FXML // fx:id="deleteModuleDDS"
+    private Button deleteModuleDDS; // Value injected by FXMLLoader
 
-    @FXML // fx:id="createPLL"
-    private Button createPLL; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsTable"
+    private TableView<?> ddsTable; // Value injected by FXMLLoader
 
-    @FXML // fx:id="createDIV"
-    private Button createDIV; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsOrderCol"
+    private TableColumn<?, ?> ddsOrderCol; // Value injected by FXMLLoader
 
-    @FXML // fx:id="delete"
-    private Button delete; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsNCol"
+    private TableColumn<?, ?> ddsNCol; // Value injected by FXMLLoader
 
-    @FXML // fx:id="createMUL"
-    private Button createMUL; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsFtwCol"
+    private TableColumn<?, ?> ddsFtwCol; // Value injected by FXMLLoader
 
-    @FXML // fx:id="generateSimFiles"
-    private Button generateSimFiles; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsPtdCol"
+    private TableColumn<?, ?> ddsPtdCol; // Value injected by FXMLLoader
 
-    @FXML // fx:id="runSimulation"
-    private Button runSimulation; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsSymbolPeriodCol"
+    private TableColumn<?, ?> ddsSymbolPeriodCol; // Value injected by FXMLLoader
 
-    @FXML // fx:id="outputText"
-    private TextArea outputText; // Value injected by FXMLLoader
+    @FXML // fx:id="ddsNumFiltTapsCol"
+    private TableColumn<?, ?> ddsNumFiltTapsCol; // Value injected by FXMLLoader
+
+    @FXML // fx:id="pllTable"
+    private TableView<Pll> pllTable; // Value injected by FXMLLoader
 
     @FXML // fx:id="pllOrderCol"
     private TableColumn<?, ?> pllOrderCol; // Value injected by FXMLLoader
@@ -100,6 +100,33 @@ public class mainWindowController {
 
     @FXML // fx:id="pllGainCol"
     private TableColumn<?, ?> pllGainCol; // Value injected by FXMLLoader
+
+    @FXML // fx:id="createPLL"
+    private Button createPLL; // Value injected by FXMLLoader
+
+    @FXML // fx:id="deleteModulePLL"
+    private Button deleteModulePLL; // Value injected by FXMLLoader
+
+    @FXML // fx:id="createDIV"
+    private Button createDIV; // Value injected by FXMLLoader
+
+    @FXML // fx:id="deleteModuleDIV"
+    private Button deleteModuleDIV; // Value injected by FXMLLoader
+
+    @FXML // fx:id="createMUL"
+    private Button createMUL; // Value injected by FXMLLoader
+
+    @FXML // fx:id="deleteModuleMUL"
+    private Button deleteModuleMUL; // Value injected by FXMLLoader
+
+    @FXML // fx:id="generateSimFiles"
+    private Button generateSimFiles; // Value injected by FXMLLoader
+
+    @FXML // fx:id="runSimulation"
+    private Button runSimulation; // Value injected by FXMLLoader
+
+    @FXML // fx:id="outputText"
+    private TextArea outputText; // Value injected by FXMLLoader
 
     @FXML
     void createDDS(ActionEvent event) {
@@ -158,15 +185,17 @@ public class mainWindowController {
         //找到对应的tableview，找到选定的行，删除OutputList.txt文件中的这个数据和ObservableList中的数据
         if(button.contains("PLL")){
             Pll selectedItem = pllTable.getSelectionModel().getSelectedItem();
-            List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
-            Iterator<CppSimModule> iterator = list.iterator();
-            while(iterator.hasNext()){
-                if(iterator.next().getOrder()==Integer.parseInt(selectedItem.getOrder())){
-                    pllData.remove(selectedItem);
-                    iterator.remove();
+            if(selectedItem!=null){
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                Iterator<CppSimModule> iterator = list.iterator();
+                while(iterator.hasNext()){
+                    if(iterator.next().getOrder()==Integer.parseInt(selectedItem.getOrder())){
+                        pllData.remove(selectedItem);
+                        iterator.remove();
+                    }
                 }
+                FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
             }
-            FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
         }
     }
 
@@ -216,13 +245,31 @@ public class mainWindowController {
         assert importModules != null : "fx:id=\"importModules\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert getPath != null : "fx:id=\"getPath\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert createDDS != null : "fx:id=\"createDDS\" was not injected: check your FXML file 'mainWindow.fxml'.";
-        assert deleteModule != null : "fx:id=\"deleteModule\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert deleteModuleDDS != null : "fx:id=\"deleteModuleDDS\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsTable != null : "fx:id=\"ddsTable\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsOrderCol != null : "fx:id=\"ddsOrderCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsNCol != null : "fx:id=\"ddsNCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsFtwCol != null : "fx:id=\"ddsFtwCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsPtdCol != null : "fx:id=\"ddsPtdCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsSymbolPeriodCol != null : "fx:id=\"ddsSymbolPeriodCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert ddsNumFiltTapsCol != null : "fx:id=\"ddsNumFiltTapsCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllTable != null : "fx:id=\"pllTable\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllOrderCol != null : "fx:id=\"pllOrderCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllDiv_valCol != null : "fx:id=\"pllDiv_valCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllFcCol != null : "fx:id=\"pllFcCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllKvCol != null : "fx:id=\"pllKvCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllFpCol != null : "fx:id=\"pllFpCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllFzCol != null : "fx:id=\"pllFzCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert pllGainCol != null : "fx:id=\"pllGainCol\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert createPLL != null : "fx:id=\"createPLL\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert deleteModulePLL != null : "fx:id=\"deleteModulePLL\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert createDIV != null : "fx:id=\"createDIV\" was not injected: check your FXML file 'mainWindow.fxml'.";
-        assert delete != null : "fx:id=\"delete\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert deleteModuleDIV != null : "fx:id=\"deleteModuleDIV\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert createMUL != null : "fx:id=\"createMUL\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert deleteModuleMUL != null : "fx:id=\"deleteModuleMUL\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert generateSimFiles != null : "fx:id=\"generateSimFiles\" was not injected: check your FXML file 'mainWindow.fxml'.";
         assert runSimulation != null : "fx:id=\"runSimulation\" was not injected: check your FXML file 'mainWindow.fxml'.";
+        assert outputText != null : "fx:id=\"outputText\" was not injected: check your FXML file 'mainWindow.fxml'.";
 
         //每次打开都会清理OutputList.txt
         File OutputList = new File("resources/OutputList.txt");
@@ -239,8 +286,8 @@ public class mainWindowController {
 
         //初始化的时候需要将控制台的信息重定向到javaFX的TextArea
         printStream = new ConsolePrint(outputText);
-//        System.setErr(printStream);
-//        System.setOut(printStream);
+        System.setErr(printStream);
+        System.setOut(printStream);
 
         //绑定tableview中的tableColumn和对象中的属性，设置table的数据集
         pllOrderCol.setCellValueFactory(new PropertyValueFactory<>("order"));

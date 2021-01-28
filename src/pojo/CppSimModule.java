@@ -11,15 +11,15 @@ import java.util.Map;
  **/
 
 public class CppSimModule implements Serializable {
-    public String name;//模块的名称
+    private String name;//模块的名称
 
-    public Map<String,Coordinate> input;
+    private Map<String,Coordinate> input;
 
-    public Map<String,Coordinate> output;//模块的输出引脚和其对应的偏置位置
+    private Map<String,Coordinate> output;//模块的输出引脚和其对应的偏置位置
 
-    public Map<String,String> param;//模块中的参数
+    private Map<String,String> param;//模块中的参数
 
-    public int order;
+    private int order;
 
     public CppSimModule(){}
 
