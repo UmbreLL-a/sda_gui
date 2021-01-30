@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pojo.CppSimModule;
+import pojo.DDS;
 import pojo.Pll;
 import service.ImportCppSimModules;
 import utils.FileObjectConvert;
@@ -34,6 +35,7 @@ public class mainWindowController {
 
     //tableview的数据容器
     private final ObservableList<Pll> pllData = FXCollections.observableArrayList();
+    private final ObservableList<DDS> ddsData = FXCollections.observableArrayList();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -50,6 +52,9 @@ public class mainWindowController {
     @FXML // fx:id="getPath"
     private TextField getPath; // Value injected by FXMLLoader
 
+    @FXML // fx:id="globalParam"
+    private Button globalParam; // Value injected by FXMLLoader
+
     @FXML // fx:id="createDDS"
     private Button createDDS; // Value injected by FXMLLoader
 
@@ -57,7 +62,7 @@ public class mainWindowController {
     private Button deleteModuleDDS; // Value injected by FXMLLoader
 
     @FXML // fx:id="ddsTable"
-    private TableView<?> ddsTable; // Value injected by FXMLLoader
+    private TableView<DDS> ddsTable; // Value injected by FXMLLoader
 
     @FXML // fx:id="ddsOrderCol"
     private TableColumn<?, ?> ddsOrderCol; // Value injected by FXMLLoader
@@ -130,7 +135,36 @@ public class mainWindowController {
 
     @FXML
     void createDDS(ActionEvent event) {
-
+        try {
+            //将新的界面加载进来
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/view/ddsWindow.fxml")));
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+            //当这个stage被关闭时触发如下内容
+            stage.setOnHiding(event1 -> {
+                //清理ObservableList，并读取OutputList文件中的相关数据，导入ObservableList
+                ddsData.clear();
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                if(list!=null){
+                    for (CppSimModule module:list){
+                        if(module.getName().equals("dds_v2")){
+                            Map<String, String> param = module.getParam();
+                            DDS dds = new DDS();
+                            dds.setOrder(String.valueOf(module.getOrder()));
+                            dds.setN(param.get("n"));
+                            dds.setFtw(param.get("ftw"));
+                            dds.setPtd(param.get("ptd"));
+                            dds.setSymbol_period(param.get("symbol_period"));
+                            dds.setNum_filt_taps(param.get("num_filt_taps"));
+                            ddsData.add(dds);
+                        }
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -197,6 +231,20 @@ public class mainWindowController {
                 FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
             }
         }
+        if(button.contains("DDS")){
+            DDS selectedItem = ddsTable.getSelectionModel().getSelectedItem();
+            if(selectedItem!=null){
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                Iterator<CppSimModule> iterator = list.iterator();
+                while(iterator.hasNext()){
+                    if(iterator.next().getOrder()==Integer.parseInt(selectedItem.getOrder())){
+                        ddsData.remove(selectedItem);
+                        iterator.remove();
+                    }
+                }
+                FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
+            }
+        }
     }
 
     @FXML
@@ -237,6 +285,11 @@ public class mainWindowController {
         if (directory != null) {
             getPath.setText(directory.getAbsolutePath());
         }
+    }
+
+    @FXML
+    void setGlobalParam(ActionEvent event) {
+
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -299,6 +352,15 @@ public class mainWindowController {
         pllGainCol.setCellValueFactory(new PropertyValueFactory<>("gain"));
         pllTable.setEditable(true);
         pllTable.setItems(pllData);
+
+        ddsOrderCol.setCellValueFactory(new PropertyValueFactory<>("order"));
+        ddsNCol.setCellValueFactory(new PropertyValueFactory<>("n"));
+        ddsFtwCol.setCellValueFactory(new PropertyValueFactory<>("ftw"));
+        ddsPtdCol.setCellValueFactory(new PropertyValueFactory<>("ptd"));
+        ddsSymbolPeriodCol.setCellValueFactory(new PropertyValueFactory<>("symbol_period"));
+        ddsNumFiltTapsCol.setCellValueFactory(new PropertyValueFactory<>("num_filt_taps"));
+        ddsTable.setEditable(true);
+        ddsTable.setItems(ddsData);
 
     }
 

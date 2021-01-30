@@ -60,8 +60,6 @@ public class pllWindowController {
 
     @FXML
     void save(ActionEvent event) {
-        Thread thread = Thread.currentThread();
-        System.out.println(thread.getName());
         Map<String,CppSimModule> modules = (Map<String, CppSimModule>) FileObjectConvert.file2Object(new File("resources/CppSimModules.txt"));
         CppSimModule pll = modules.get("pll_v1");
         Map<String,String> params = new HashMap<>();
@@ -109,7 +107,7 @@ public class pllWindowController {
         FileObjectConvert.object2File(outputList,new File("resources/OutputList.txt"));
         System.out.println("成功添加PLL模块实例，参数为：");
         Set<String> set = params.keySet();
-        System.out.println(pll.getOrder());
+        System.out.println("order = "+pll.getOrder());
         for(String s:set){
             System.out.println(s+" = "+params.get(s));
         }
