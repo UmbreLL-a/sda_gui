@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.GlobalParamWindow"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="179.0" prefWidth="293.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.globalParamWindow">
+   <children>
+      <TextField fx:id="Ts" layoutX="99.0" layoutY="27.0" />
+      <TextField fx:id="num_filt_taps" layoutX="99.0" layoutY="72.0" />
+      <Label layoutX="48.0" layoutY="31.0" text="Ts">
+         <tooltip>
+            <Tooltip text="仿真采样频率倒数" />
+         </tooltip>
+      </Label>
+      <Label layoutX="16.0" layoutY="76.0" text="num_filt_taps">
+         <tooltip>
+            <Tooltip text="仿真点数" />
+         </tooltip>
+      </Label>
+      <Button fx:id="save" layoutX="171.0" layoutY="131.0" mnemonicParsing="false" onAction="#save" text="保存" />
+      <Button fx:id="cancel" layoutX="240.0" layoutY="131.0" mnemonicParsing="false" onAction="#cancel" text="取消" />
+   </children>
 </AnchorPane>

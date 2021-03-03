@@ -14,9 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import pojo.CppSimModule;
-import pojo.DDS;
-import pojo.Pll;
+import pojo.*;
 import service.ImportCppSimModules;
 import utils.FileObjectConvert;
 
@@ -36,6 +34,8 @@ public class mainWindowController {
     //tableview的数据容器
     private final ObservableList<Pll> pllData = FXCollections.observableArrayList();
     private final ObservableList<DDS> ddsData = FXCollections.observableArrayList();
+    private final ObservableList<DIV> divData = FXCollections.observableArrayList();
+    private final ObservableList<MUL> mulData = FXCollections.observableArrayList();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -106,6 +106,24 @@ public class mainWindowController {
     @FXML // fx:id="pllGainCol"
     private TableColumn<?, ?> pllGainCol; // Value injected by FXMLLoader
 
+    @FXML
+    private TableView<DIV> divTable;
+
+    @FXML
+    private TableColumn<?, ?> divOrderCol;
+
+    @FXML
+    private TableColumn<?, ?> divDivValCol;
+
+    @FXML
+    private TableView<MUL> mulTable;
+
+    @FXML
+    private TableColumn<?, ?> mulOrderCol;
+
+    @FXML
+    private TableColumn<?, ?> mulMulValCol;
+
     @FXML // fx:id="createPLL"
     private Button createPLL; // Value injected by FXMLLoader
 
@@ -148,7 +166,7 @@ public class mainWindowController {
                 List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
                 if(list!=null){
                     for (CppSimModule module:list){
-                        if(module.getName().equals("dds_v2")){
+                        if(module.getName().equals("dds")){
                             Map<String, String> param = module.getParam();
                             DDS dds = new DDS();
                             dds.setOrder(String.valueOf(module.getOrder()));
@@ -169,12 +187,62 @@ public class mainWindowController {
 
     @FXML
     void createDIV(ActionEvent event) {
-
+        try {
+            //将新的界面加载进来
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/view/divWindow.fxml")));
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+            //当这个stage被关闭时触发如下内容
+            stage.setOnHiding(event1 -> {
+                //清理ObservableList，并读取OutputList文件中的相关数据，导入ObservableList
+                divData.clear();
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                if(list!=null){
+                    for (CppSimModule module:list){
+                        if(module.getName().equals("div")){
+                            Map<String, String> param = module.getParam();
+                            DIV div = new DIV();
+                            div.setDiv_val(param.get("div_val"));
+                            div.setOrder(String.valueOf(module.getOrder()));
+                            divData.add(div);
+                        }
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void createMUL(ActionEvent event) {
-
+        try {
+            //将新的界面加载进来
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/view/mulWindow.fxml")));
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+            //当这个stage被关闭时触发如下内容
+            stage.setOnHiding(event1 -> {
+                //清理ObservableList，并读取OutputList文件中的相关数据，导入ObservableList
+                mulData.clear();
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                if(list!=null){
+                    for (CppSimModule module:list){
+                        if(module.getName().equals("mul")){
+                            Map<String, String> param = module.getParam();
+                            MUL mul = new MUL();
+                            mul.setOrder(String.valueOf(module.getOrder()));
+                            mul.setMut_val(param.get("mut_val"));
+                            mulData.add(mul);
+                        }
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -192,7 +260,7 @@ public class mainWindowController {
                 List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
                 if(list!=null){
                     for (CppSimModule module:list){
-                        if(module.getName().equals("pll_v1")){
+                        if(module.getName().equals("pll")){
                             Map<String, String> param = module.getParam();
                             Pll pll = new Pll();
                             pll.setDiv_val(param.get("div_val"));
@@ -245,11 +313,34 @@ public class mainWindowController {
                 FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
             }
         }
-    }
-
-    @FXML
-    void generateSimFiles(ActionEvent event) {
-
+        if(button.contains("DIV")){
+            DIV selectedItem = divTable.getSelectionModel().getSelectedItem();
+            if(selectedItem!=null){
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                Iterator<CppSimModule> iterator = list.iterator();
+                while(iterator.hasNext()){
+                    if(iterator.next().getOrder()==Integer.parseInt(selectedItem.getOrder())){
+                        divData.remove(selectedItem);
+                        iterator.remove();
+                    }
+                }
+                FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
+            }
+        }
+        if(button.contains("MUL")){
+            MUL selectedItem = mulTable.getSelectionModel().getSelectedItem();
+            if(selectedItem!=null){
+                List<CppSimModule> list = (List<CppSimModule>) FileObjectConvert.file2Object(new File("resources/OutputList.txt"));
+                Iterator<CppSimModule> iterator = list.iterator();
+                while(iterator.hasNext()){
+                    if(iterator.next().getOrder()==Integer.parseInt(selectedItem.getOrder())){
+                        mulData.remove(selectedItem);
+                        iterator.remove();
+                    }
+                }
+                FileObjectConvert.object2File(list,new File("resources/OutputList.txt"));
+            }
+        }
     }
 
     @FXML
@@ -273,11 +364,6 @@ public class mainWindowController {
     }
 
     @FXML
-    void runSimulation(ActionEvent event) {
-
-    }
-
-    @FXML
     void selectDirectory(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose Folder");
@@ -289,6 +375,24 @@ public class mainWindowController {
 
     @FXML
     void setGlobalParam(ActionEvent event) {
+        try {
+            //将新的界面加载进来
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/view/globalParamWindow.fxml")));
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void runSimulation(ActionEvent event) {
+
+    }
+
+    @FXML
+    void generateSimFiles(ActionEvent event) {
 
     }
 
@@ -338,9 +442,9 @@ public class mainWindowController {
         }
 
         //初始化的时候需要将控制台的信息重定向到javaFX的TextArea
-        printStream = new ConsolePrint(outputText);
-        System.setErr(printStream);
-        System.setOut(printStream);
+//        printStream = new ConsolePrint(outputText);
+//        System.setErr(printStream);
+//        System.setOut(printStream);
 
         //绑定tableview中的tableColumn和对象中的属性，设置table的数据集
         pllOrderCol.setCellValueFactory(new PropertyValueFactory<>("order"));
@@ -361,6 +465,16 @@ public class mainWindowController {
         ddsNumFiltTapsCol.setCellValueFactory(new PropertyValueFactory<>("num_filt_taps"));
         ddsTable.setEditable(true);
         ddsTable.setItems(ddsData);
+
+        divOrderCol.setCellValueFactory(new PropertyValueFactory<>("order"));
+        divDivValCol.setCellValueFactory(new PropertyValueFactory<>("div_val"));
+        divTable.setEditable(true);
+        divTable.setItems(divData);
+
+        mulOrderCol.setCellValueFactory(new PropertyValueFactory<>("order"));
+        mulMulValCol.setCellValueFactory(new PropertyValueFactory<>("mut_val"));
+        mulTable.setEditable(true);
+        mulTable.setItems(mulData);
 
     }
 
